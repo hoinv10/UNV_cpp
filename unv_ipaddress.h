@@ -1,0 +1,15 @@
+#ifndef UNV_IPADDRESS_H
+#define UNV_IPADDRESS_H
+
+// UPD
+#define UDP_IPADDRESS "127.0.0.1" // "192.168.1.64"
+#define UDP_PORT 13251
+
+// TCP/IP
+#define TCP_IPADRESS "127.0.0.1"
+#define TCP_PORT 2002
+
+// PLC
+#define PLC_THU_IPADRESS "192.168.9.100"
+
+#endif // UNV_IPADDRESS_H

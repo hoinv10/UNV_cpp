@@ -1,0 +1,50 @@
+#ifndef POWERANDCONTROL_H
+#define POWERANDCONTROL_H
+
+/* PARAMETER
+    BETA => GOC PHUONG VI
+    EPSILON => GOC TA
+    THETA1 => GOC TRONG MAT PHANG PHI 1
+    THETA2 => GOC TRONG MAT PHANG PHI 2
+    ...
+*/
+
+
+// BAN TIN CHO HT DIEU KHIEN
+#define CONTROLTYPE 0x1E
+
+// MOTION MODE
+
+// QUAY DEU
+#define BETA_JOG 0x11
+#define EPSILON_JOG 0x12
+// QUAY GOC TUONG DOI
+#define BETA_RP 0x13
+#define EPSILON_RP 0x14
+// QUAY GOC TUYET DOI
+#define BETA_AP 0x15
+#define EPSILON_AP 0x16
+#define BETA_EPSILON_AP 0x17
+
+// QUAY THEO PHI 1, PHI2
+#define THETA1_APS  0x18
+#define THETA2_APS 0x19
+
+// dieu khien toc do
+#define BETA_SP 0x20
+#define EPSILON_SP 0x21
+
+// dieu khien quet
+#define QUET 0x1a
+#define SUCSAO_VONG 0x22
+#define SUCSAO_QUATLON 0x23
+#define SUCSAO_QUATNHO 0X24
+#define SUCSAO_TUYCHINH 0x25
+
+// ban tin UDP
+#define ENC_VAL 0xEF
+
+// DIEU KHIEN -> XLTH
+#define STATUS 0x51
+
+#endif // POWERANDCONTROL_H
