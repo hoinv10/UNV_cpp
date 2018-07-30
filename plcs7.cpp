@@ -26,8 +26,10 @@ void PlcS7::connect()
     }
 }
 // read Ouput register-----------------------------------------
-byte PlcS7::ReadQ_byte(int OutputArea) // Q0 => ReadQ_byte(0)
+byte PlcS7::ReadQ_byte(string Q) // Q0 => ReadQ_byte(0)
 {
+    int OutputArea;
+    sscanf(Q.c_str(), "Q%d",&OutputArea);
     if (Connected)
     {
         byte Output[1];
@@ -41,8 +43,10 @@ byte PlcS7::ReadQ_byte(int OutputArea) // Q0 => ReadQ_byte(0)
     return 0;
 }
 
-bool PlcS7::ReadQ_bit(int OutputArea, int bit) // Q0.0 => ReadQ_bit(0,0)
+bool PlcS7::ReadQ_bit(string QX) // Q0.0 => ReadQ_bit(0,0)
 {
+    int OutputArea, bit;
+    sscanf(QX.c_str(), "Q%d.%d",&OutputArea,&bit);
     if (Connected)
     {
         byte Output[1];
@@ -56,8 +60,10 @@ bool PlcS7::ReadQ_bit(int OutputArea, int bit) // Q0.0 => ReadQ_bit(0,0)
     return 0;
 }
 // read Input register---------------------------------------
-byte PlcS7::ReadI_byte(int InputArea) // I0 => ReadI_byte(0)
+byte PlcS7::ReadI_byte(string I) // I0 => ReadI_byte("I0");
 {
+    int InputArea;
+    sscanf(I.c_str(), "I%d",&InputArea);
     if (Connected)
     {
         byte Input[1];
@@ -70,8 +76,10 @@ byte PlcS7::ReadI_byte(int InputArea) // I0 => ReadI_byte(0)
     }
     return 0;
 }
-bool PlcS7::ReadI_bit(int InputArea,int bit) // I0.0 => ReadI_bit(0,0)
+bool PlcS7::ReadI_bit(string IX) // I0.0 => ReadI_bit(0,0)
 {
+    int InputArea,bit;
+    sscanf(IX.c_str(), "I%d.%d",&InputArea, &bit);
     if (Connected)
     {
         byte Input[1];
@@ -85,8 +93,10 @@ bool PlcS7::ReadI_bit(int InputArea,int bit) // I0.0 => ReadI_bit(0,0)
     return 0;
 }
 // write to Output Resistor ---------------------------------
-void PlcS7::WriteQ_byte(int OutputArea, byte val)
+void PlcS7::WriteQ_byte(string Q,  byte val)
 {
+    int OutputArea;
+    sscanf(Q.c_str(), "Q%d",&OutputArea);
     if (Connected)
     {
         plc->ABWrite(OutputArea,1,&val);
@@ -96,14 +106,17 @@ void PlcS7::WriteQ_byte(int OutputArea, byte val)
         cout<< "\033[0;31m" << "Device disconnected to network" << "\033[0m" << endl;
     }
 }
-void PlcS7::WriteQ_bit(int OutputArea, int bit, int val)
+void PlcS7::WriteQ_bit(string QX, int val)
 {
+    int OutputArea,bit;
+    sscanf(QX.c_str(), "Q%d.%d",&OutputArea,&bit);
+    string DB = "Q" + std::to_string(OutputArea) ;
     if (Connected)
     {
-        byte Q = ReadQ_byte(OutputArea);
+        byte Q = ReadQ_byte(DB);
         Q = setbit(Q,bit,val);
-        WriteQ_byte(OutputArea,Q);
-        Q = ReadQ_byte(OutputArea);
+        WriteQ_byte(DB,Q);
+        Q = ReadQ_byte(DB);
         cout << "\033[0;32m" << "Writed Q"<<OutputArea<<"."<<bit<<"="<<val << "\033[0m" <<endl;
     }
     else
@@ -113,7 +126,24 @@ void PlcS7::WriteQ_bit(int OutputArea, int bit, int val)
 }
 
 // Read data from data block-------------------------------
-byte* PlcS7::ReadDB_Arrbyte(int DBArea,int DBD, int size)
+byte* PlcS7::ReadDB_Arrbyte(string DB, int size)
+{
+    int DBArea,DBD;
+    sscanf(DB.c_str(), "DB%d.DBD%d",&DBArea,&DBD);
+    if (Connected)
+    {
+        byte *db;
+        db = (byte *)malloc(sizeof(byte)*size);
+        plc->DBRead(DBArea,DBD,size,db);
+        return db;
+    }
+    else
+    {
+          cout<< "\033[0;31m" << "Device disconnected to network" << "\033[0m" << endl;
+    }
+    return 0;
+}
+byte* PlcS7::ReadDB_Arrbyte(int DBArea, int DBD, int size)
 {
     if (Connected)
     {
@@ -129,8 +159,10 @@ byte* PlcS7::ReadDB_Arrbyte(int DBArea,int DBD, int size)
     return 0;
 }
 
-byte PlcS7::ReadDB_byte(int DBArea, int DBD)
+byte PlcS7::ReadDB_byte(string DB)
 {
+    int DBArea,DBD;
+    sscanf(DB.c_str(), "DB%d.DBD%d",&DBArea,&DBD);
     if (Connected)
     {
         byte db;
@@ -144,8 +176,10 @@ byte PlcS7::ReadDB_byte(int DBArea, int DBD)
     return 0;
 }
 
-bool PlcS7::ReadDB_bit(int DBArea,int DBD, int bit)
+bool PlcS7::ReadDB_bit(string DBX)
 {
+    int DBArea,DBD,bit;
+    sscanf(DBX.c_str(), "DB%d.DBDX%d.%d",&DBArea,&DBD,&bit);
     if (Connected)
     {
         byte db;
@@ -158,9 +192,10 @@ bool PlcS7::ReadDB_bit(int DBArea,int DBD, int bit)
     }
     return 0;
 }
-int16_t PlcS7::ReadDB_int16(int DBArea, int DBD)
-//db0.dbd4 => ReadDB_word(0,4)
+int16_t PlcS7::ReadDB_int16(string DBW)
 {
+    int DBArea,DBD;
+    sscanf(DBW.c_str(), "DB%d.DBW%d",&DBArea,&DBD);
     if (Connected)
     {
         byte *db;
@@ -176,9 +211,10 @@ int16_t PlcS7::ReadDB_int16(int DBArea, int DBD)
     return 0;
 }
 
-word PlcS7::ReadDB_word(int DBArea, int DBD)
-//db0.dbd4 => ReadDB_word(0,4)
+word PlcS7::ReadDB_word(string DBW)
 {
+    int DBArea,DBD;
+    sscanf(DBW.c_str(), "DB%d.DBW%d",&DBArea,&DBD);
     if (Connected)
     {
         byte *db;
@@ -193,36 +229,111 @@ word PlcS7::ReadDB_word(int DBArea, int DBD)
     }
     return 0;
 }
-//float PlcS7::floatFromBits( uint32_t const bits )
-//{
-//    char    buffer[nBytes];
-//    float   result;
 
-//    memcpy( buffer, &bits, nBytes );
-//    memcpy( &result, buffer, nBytes );
-//    return result;
-//}
-
-float PlcS7::ReadDB_float(int DBArea, int DBD)
+float PlcS7::ReadDB_float(string DBDW)
 {
+    int DBArea,DBD;
+    sscanf(DBDW.c_str(), "DB%d.DBDW%d",&DBArea,&DBD);
     if (Connected)
     {
         byte *db;
         db = ReadDB_Arrbyte(DBArea,DBD,4);
-        uint32_t out = uint32_t(db[0] << 24 | db[1] << 16 | db[2] << 8 | db[3]);
+        ConvertFI.num = uint32_t(db[0] << 24 | db[1] << 16 | db[2] << 8 | db[3]);
         free (db);
-//        float out;
-//        plc->ReadArea(S7AreaDB,2,6,2,S7WLReal,&out);
-//        int out1;
-//        plc->ReadArea(S7AreaDB,2,2,1,S7WLWord, &out1);
-        return float(out);
+        return float(ConvertFI.fnum);
+    }
+    else
+    {
+        cout<< "\033[0;31m" << "Device disconnected to network" << "\033[0m" << endl;
+    }
+    return 0;
+}
+// Write data to data block--------------------------------
+
+void PlcS7::WriteDB_byte(string DB, byte val)
+{
+    int DBArea,DBD;
+    sscanf(DB.c_str(), "DB%d.DBD%d",&DBArea,&DBD);
+    if (Connected)
+    {
+        plc->DBWrite(DBArea,DBD,1, &val);
+    }
+    else
+    {
+        cout<< "\033[0;31m" << "Device disconnected to network" << "\033[0m" << endl;
+    }
+}
+
+void PlcS7::WriteDB_bit(string DBX, int val)
+{
+    int DBArea,DBD,bit;
+    sscanf(DBX.c_str(), "DB%d.DBDX%d.%d",&DBArea,&DBD,&bit);
+    string DB = "DB"+ std::to_string(DBArea) + ".DBD" + std::to_string(DBD);
+    if (Connected)
+    {
+        byte read;
+        read = ReadDB_byte(DB);
+        read = setbit(read,bit,val);
+        plc->DBWrite(DBArea,DBD,1, &read);
     }
     else
     {
           cout<< "\033[0;31m" << "Device disconnected to network" << "\033[0m" << endl;
     }
-    return 0;
 }
+void PlcS7::WriteDB_word(string DB, word val)
+{
+    int DBArea,DBD;
+    sscanf(DB.c_str(), "DB%d.DBW%d",&DBArea,&DBD);
+    if (Connected)
+    {
+        byte data[2];
+        data[0] = (val >> 8) & 0x00ff;
+        data[1] = val & 0x00ff;
+        plc->DBWrite(DBArea,DBD,2, &data);
+    }
+    else
+    {
+        cout<< "\033[0;31m" << "Device disconnected to network" << "\033[0m" << endl;
+    }
+}
+void PlcS7::WriteDB_int16(string DB, int16_t val)
+{
+    int DBArea,DBD;
+    sscanf(DB.c_str(), "DB%d.DBW%d",&DBArea,&DBD);
+    if (Connected)
+    {
+        byte data[2];
+        data[0] = (val >> 8) & 0x00ff;
+        data[1] = val & 0x00ff;
+        plc->DBWrite(DBArea,DBD,2,&data);
+    }
+    else
+    {
+        cout<< "\033[0;31m" << "Device disconnected to network" << "\033[0m" << endl;
+    }
+}
+void PlcS7::WriteDB_float(string DB, float val)
+{
+    int DBArea,DBD;
+    sscanf(DB.c_str(), "DB%d.DBDW%d",&DBArea,&DBD);
+    if (Connected)
+    {
+        ConvertFI.fnum = val;
+        uint32_t ival = ConvertFI.num;
+        byte data[4];
+        data[0] = (ival >> 24) & 0x000000ff;
+        data[1] = (ival >> 16) & 0x000000ff;
+        data[2] = (ival >> 8) & 0x000000ff;
+        data[3] =  ival & 0x000000ff;
+        plc->DBWrite(DBArea,DBD,4, &data);
+    }
+    else
+    {
+        cout<< "\033[0;31m" << "Device disconnected to network" << "\033[0m" << endl;
+    }
+}
+
 
 // Show byte data as bool format---------------------------
 void PlcS7::ShowBool(byte input)
@@ -243,12 +354,12 @@ bool PlcS7::BitOf(byte input, int n)
 }
 
 // set bit ------------------------------------------------
-byte PlcS7::setbit(byte &num, int pos, int val)
+byte PlcS7::setbit(byte num, int pos, int val)
 {
     num = (val==0) ? num & (~(0x01 << pos)) : num|(0x01 << pos);
     return num;
 }
-word PlcS7::setbit(word &num, int pos, int val)
+word PlcS7::setbit(word num, int pos, int val)
 {
     num = (val==0) ? num & (~(0x0001 << pos)) : num|(0x0001 << pos);
     return num;

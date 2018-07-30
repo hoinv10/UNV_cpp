@@ -3,12 +3,19 @@
 #include <iostream>
 #include "snap7.h"
 #include <string.h>
+#include <boost/format.hpp>
 
 using namespace std;
+
 
 class PlcS7
 {
 public:
+    union
+    {
+        uint32_t num;
+        float fnum;
+    } ConvertFI;
 
     PlcS7(string ip, int rack, int slot);
     ~PlcS7();
@@ -16,26 +23,33 @@ public:
     TS7Client *plc;
 
     bool BitOf(byte input, int n);
-    byte setbit(byte &num, int pos, int val);
-    word setbit(word &num, int pos, int val);
+    byte setbit(byte num, int pos, int val);
+    word setbit(word num, int pos, int val);
 
-    byte ReadI_byte(int InputArea);
-    bool ReadI_bit(int InputArea,int bit);
-
-    byte ReadQ_byte(int OutputArea);
-    bool ReadQ_bit(int OutputArea, int bit);
-    void WriteQ_byte(int OutputArea, byte val);
-    void WriteQ_bit(int OutputArea, int bit, int val);
+    byte ReadQ_byte(string Q);
+    bool ReadQ_bit(string QX);
+    byte ReadI_byte(string I);
+    bool ReadI_bit(string IX);
+    void WriteQ_byte(string Q, byte val);
+    void WriteQ_bit(string QX, int val);
 
     byte* ReadDB_Arrbyte(int DBArea,int DBD, int size);
-    byte ReadDB_byte(int DBArea, int DBD);
-    bool ReadDB_bit(int DBArea,int DBD, int bit);
-    int16_t ReadDB_int16(int DBArea, int DBD);
-    word ReadDB_word(int DBArea, int DBD);
-    float ReadDB_float(int DBArea, int DBD);
-    void ShowBool(byte input);
-    float floatFromBits( uint32_t const bits );
+    byte* ReadDB_Arrbyte(string DB, int size);
+    byte ReadDB_byte(string DB);
+    bool ReadDB_bit(string DBX);
+    int16_t ReadDB_int16(string DBW);
+    word ReadDB_word(string DBW);
+    float ReadDB_float(string DBDW);
+
+
+    void WriteDB_byte(string DB, byte val);
+    void WriteDB_bit(string DBX, int val);
+    void WriteDB_word(string DB, word val);
+    void WriteDB_int16(string DB, int16_t val);
+    void WriteDB_float(string DB, float val);
+
     bool Connected;
+    void ShowBool(byte input);
 private:
     string ip;
     int rack;
