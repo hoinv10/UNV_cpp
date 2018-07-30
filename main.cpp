@@ -8,34 +8,26 @@
 #include "udpReceiver.h"
 #include "plc_tuDKTC.h"
 #include <boost/format.hpp>
-union
-{
-    byte bnum;
-    uint16_t unum;
-    int num;
-    float fnum;
-} my_union;
+
+const string var1 = "DB2.DBDX0.0";
+const string var2 = "DB2.DBD1";
+const string var3 = "DB2.DBW2";
+const string var4 = "DB2.DBW4";
+const string var5 = "DB2.DBDW6";
 
 void TestS7()
 {
-
-
     PlcS7 *plc = new PlcS7(PLC_THU_IPADRESS,0,1);
     plc->connect();
-    cout <<"var1 = " << plc->ReadDB_bit(2,0,0) << endl;
-    cout <<"var2 = " << int(plc->ReadDB_byte(2,1)) << endl;
-    cout <<"var3 = " << plc->ReadDB_int16(2,2) << endl;
-    cout <<"var4 = " << plc->ReadDB_word(2,4) << endl;
-
-    my_union.num = uint32_t(plc->ReadDB_float(2,6));
-
-   cout <<"var5 = "<< boost::format("%11.2f") % my_union.fnum<< endl;
-//    byte *data = plc->ReadDB_Arrbyte(2,6,4);
-//    plc->ShowBool(data[0]);
-//    plc->ShowBool(data[1]);
-//    plc->ShowBool(data[2]);
-//    plc->ShowBool(data[3]);
+    float x = 12.34;
+    plc->WriteDB_float(var5,x);
+    cout <<"var1 = " << plc->ReadDB_bit(var1) << endl;
+    cout <<"var2 = " << int(plc->ReadDB_byte(var2)) << endl;
+    cout <<"var3 = " << plc->ReadDB_int16(var3) << endl;
+    cout <<"var4 = " << plc->ReadDB_word(var4) << endl;
+    cout <<"var5 = "<<  plc->ReadDB_float(var5)<< endl;
 }
+
 void TestTCP()
 {
     tcpsocket *xlth = new tcpsocket(TCP_IPADRESS,TCP_PORT);
@@ -58,10 +50,6 @@ void TestUDP() // run UDP.py in folder
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-   // TestS7();
-    int x=30000;
-    my_union.unum = 65535;
-    cout << "float = " << my_union.num << endl;
-    // them mot dong o day
+   TestS7();
     return a.exec();
 }
