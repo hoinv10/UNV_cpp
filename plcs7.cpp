@@ -207,13 +207,15 @@ float PlcS7::ReadDB_float(int DBArea, int DBD)
 {
     if (Connected)
     {
-//        byte *db;
-//        db = ReadDB_Arrbyte(DBArea,DBD,4);
-//        int32_t out = int32_t(db[0] << 24 | db[1] << 16 | db[2] << 8 | db[3]);
-//        free (db);
-        float out;
-        plc->ReadArea(0x84,2,6,2,0x08,&out);
-        return out;
+        byte *db;
+        db = ReadDB_Arrbyte(DBArea,DBD,4);
+        uint32_t out = uint32_t(db[0] << 24 | db[1] << 16 | db[2] << 8 | db[3]);
+        free (db);
+//        float out;
+//        plc->ReadArea(S7AreaDB,2,6,2,S7WLReal,&out);
+//        int out1;
+//        plc->ReadArea(S7AreaDB,2,2,1,S7WLWord, &out1);
+        return float(out);
     }
     else
     {
