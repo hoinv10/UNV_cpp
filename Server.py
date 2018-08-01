@@ -1,3 +1,5 @@
+# code using python 2.7 
+# error when run in python3
 import socket
 import time
 import threading

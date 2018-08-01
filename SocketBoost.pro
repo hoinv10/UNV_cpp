@@ -11,14 +11,15 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    tcpsocket.cpp \
     ThreadBase.cpp \
     unvhandledata.cpp \
     plcs7.cpp \
     snap7.cpp \
     udpReceiver.cpp \
     plc_tuthu.cpp \
-    plc_tuDKTC.cpp
+    plc_tuDKTC.cpp \
+    tcpclientt.cpp \
+    tcpserver.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -37,7 +38,6 @@ LIBS    += -lstdc++ \
                 -lboost_signals \
                 -lsnap7
 HEADERS += \
-    tcpsocket.h \
     ThreadBase.h \
     unvhandledata.h \
     powerandcontrol.h \
@@ -46,6 +46,8 @@ HEADERS += \
     udpReceiver.h \
     unv_ipaddress.h \
     plc_tuthu.h \
-    plc_tuDKTC.h
+    plc_tuDKTC.h \
+    tcpclient.h \
+    tcpserver.h
 
 

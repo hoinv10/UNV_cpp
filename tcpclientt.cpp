@@ -1,13 +1,13 @@
-#include "tcpsocket.h"
+#include "tcpclient.h"
 
-tcpsocket::tcpsocket(string host, int port)
+tcpclient::tcpclient(string host, int port)
 {
     this->port = port;
     this->host = host;
 
 }
 
-void tcpsocket::connect()
+void tcpclient::connect()
 {
     boost::asio::io_service ios;
     boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address::from_string(host), port);
@@ -15,14 +15,14 @@ void tcpsocket::connect()
     socket->connect(endpoint);
 }
 
-void tcpsocket::close()
+void tcpclient::close()
 {
     socket->close();
 }
 
 
 
-void tcpsocket::send_str(string msg)
+void tcpclient::send_str(string msg)
 {
     boost::array<char, 128> buf;
     std::copy(msg.begin(),msg.end(),buf.begin());
@@ -40,7 +40,7 @@ void tcpsocket::send_str(string msg)
 #endif
 }
 
-string tcpsocket::receive_until()
+string tcpclient::receive_until()
 {
     std::string ReadBuffer;
     std::stringstream message_stream;
@@ -56,13 +56,13 @@ string tcpsocket::receive_until()
     return ReadBuffer;
 }
 
-string tcpsocket::receive_package()
+string tcpclient::receive_package()
 {
     string msg;
     return msg;
 }
 
-tcpsocket::~tcpsocket()
+tcpclient::~tcpclient()
 {
     if (socket != NULL)
     {
@@ -71,17 +71,17 @@ tcpsocket::~tcpsocket()
     }
 }
 
-void tcpsocket::operator ()()
+void tcpclient::operator ()()
 {
     run();
 }
 
-void tcpsocket::stop()
+void tcpclient::stop()
 {
 
 }
 
-void tcpsocket::run()
+void tcpclient::run()
 {
     cout << "Start thread TCP socket" << endl;
 

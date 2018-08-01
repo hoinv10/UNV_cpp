@@ -1,5 +1,5 @@
-#ifndef TCPSOCKET_H
-#define TCPSOCKET_H
+#ifndef TCPCLIENT_H
+#define TCPCLIENT_H
 #include <cstdlib>
 #include <iostream>
 #include <memory>
@@ -13,11 +13,11 @@
 
 using namespace  std;
 
-class tcpsocket :public ThreadBase
+class tcpclient :public ThreadBase
 {
 public:
-    tcpsocket(string host, int port);
-    ~tcpsocket();
+    tcpclient(string host, int port);
+    ~tcpclient();
     void connect();
     void close();
     void send_str(string msg);

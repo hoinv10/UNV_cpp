@@ -1,5 +1,5 @@
 #include <QCoreApplication>
-#include "tcpsocket.h"
+#include "tcpclient.h"
 #include <unvhandledata.h>
 #include "powerandcontrol.h"
 #include "plcs7.h"
@@ -7,7 +7,7 @@
 #include "unv_ipaddress.h"
 #include "udpReceiver.h"
 #include "plc_tuDKTC.h"
-#include <boost/format.hpp>
+#include "tcpserver.h"
 
 const string var1 = "DB2.DBDX0.0";
 const string var2 = "DB2.DBD1";
@@ -30,11 +30,11 @@ void TestS7()
 
 void TestTCP()
 {
-    tcpsocket *xlth = new tcpsocket(TCP_IPADRESS,TCP_PORT);
+    tcpclient *xlth = new tcpclient(TCP_IPADRESS,TCP_PORT);
     UNVHandleData b;
     xlth->connect();
     xlth->HandlerSignal.connect(bind(&UNVHandleData::handler, &b,_1));
-    xlth->send_str("test");
+    xlth->send_str("test\n");
     usleep(1000);
     cout << "receive data:" << xlth->receive_until() << endl;
     xlth->start();
@@ -46,10 +46,17 @@ void TestUDP() // run UDP.py in folder
     UdpReceiver *client = new UdpReceiver();
     client->start();
 }
+// server
+void TestServer()
+{
+    tcpServer *s = new tcpServer(2002);
+    s->start();
+    cout << "Start server. Waiting for event" << endl;
+}
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-   TestS7();
+    TestServer();
     return a.exec();
 }

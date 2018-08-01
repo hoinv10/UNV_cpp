@@ -6,6 +6,8 @@ UNVHandleData::UNVHandleData()
 }
 void UNVHandleData::handler(string buff)
 {
+    cout << "Handle data:" <<  buff << endl;
+
     int ind;
     char type,length;
     char data[length];
